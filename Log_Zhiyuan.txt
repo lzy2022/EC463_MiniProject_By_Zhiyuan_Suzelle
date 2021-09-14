@@ -1,0 +1,25 @@
+Sep 9:
+	1. Set up environments (React Native, React Native Android, FireBase for React Nativev)
+	2. 
+
+Sep 11:
+	1. Determine the data structure
+	2. Discuss about the UI frame work
+	3. Determine the workflow of the APP
+	4. Check the Gmail Authentication function of Firebase
+
+Sep 12:
+	1. Set up backend .js files for the React Native.
+
+Sep 13:
+	1. Set up Firebase and Gmail Authentication
+	 Additional Packages:
+		1. firebase/app (need to register the components in the .js)
+			https://invertase.io/blog/getting-started-with-cloud-firestore-on-react-native
+		2. firebase/firestore
+			https://invertase.io/blog/getting-started-with-cloud-firestore-on-react-native
+		3. react-native-paper (for UI)
+			https://callstack.github.io/react-native-paper/getting-started.html
+		4. react-native-vector-icons (for UI, need to register)
+			https://callstack.github.io/react-native-paper/getting-started.html
+		5. react-native-firebase/auth (for Google autho)
