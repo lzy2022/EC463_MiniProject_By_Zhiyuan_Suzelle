@@ -28,7 +28,7 @@ export default class Food{
     {
         this.name = food.name;
         this.food_nutri = new NutritionForm();
-        this.food_nutri.add(food.return_nutri());
+        this.food_nutri.add(food.food_nutri);
     }
 
 }

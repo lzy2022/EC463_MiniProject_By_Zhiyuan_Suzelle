@@ -53,8 +53,8 @@ export default class FoodEntry{
 
     copy(entry)
     {
-        this.entry.copy(entry.get_food());
-        this.serving_size = entry.get_servingsize();
+        this.entry.copy(entry.entry);
+        this.serving_size = entry.serving_size;
     }
 
 }
