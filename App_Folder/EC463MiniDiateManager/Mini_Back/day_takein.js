@@ -11,7 +11,7 @@ export default class DayTakeIn{
 
     set_name(name)
     {
-        this.name = name;
+        this.name = (' ' + name).slice(1);
     }
 
     get_name(){
@@ -36,12 +36,15 @@ export default class DayTakeIn{
 
     copy(day)
     {
-        this.name = day.name;
+        this.name = (' ' + day.name).slice(1);
         this.meals = new Array();
-        for(let i = 0; i < day.meals.length; i++)
+        if(typeof day.meals !== 'undefined')
         {
-            this.meals[i] = new Meal();
-            this.meals[i].copy(day.meals[i]);
+            for(let i = 0; i < day.meals.length; i++)
+            {
+                this.meals[i] = new Meal();
+                this.meals[i].copy(day.meals[i]);
+            }
         }
     }
 

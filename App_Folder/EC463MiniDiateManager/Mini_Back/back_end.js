@@ -8,7 +8,7 @@ export default class BackEnd{
     constructor(){
         this.current_day = new DayTakeIn();
         this.saved_day = new Array();
-        this.saved_meal = new Array();
+        //this.saved_meal = new Array();
         this.saved_food = new Array();
     }
 
@@ -33,14 +33,30 @@ export default class BackEnd{
         return false;
     }
 
-    add_mealList(meal){
+    copy(ori){
+        this.current_day = new DayTakeIn();
+        this.saved_day = new Array();
+        this.saved_food = new Array();
 
+        this.current_day.copy(ori.current_day);
+        
+        if (typeof ori.saved_day !== 'undefined')
+        {
+            for(let i = 0; i < ori.saved_day.length; i++)
+            {
+                this.saved_day[i] = new DayTakeIn();
+                this.saved_day[i].copy(ori.saved_day[i]);
+            }
+        }
+        if (typeof ori.saved_food !== 'undefined')
+        {
+            for(let i = 0; i < ori.saved_food.length; i++)
+            {
+                this.saved_food[i] = new Food();
+                this.saved_food[i].copy(ori.saved_food[i]);
+            }
+        }
     }
-
-    add_foodList(food){
-
-    }
-
 
     //print day sum
     //print meal sum

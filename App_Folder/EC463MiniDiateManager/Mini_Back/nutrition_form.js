@@ -17,8 +17,11 @@ export default class NutritionForm{
 
     add(form)
     {
-        this.Protein += form.Protein;
-        this.Carbohydrate += form.Carbohydrate;
-        this.Fat += form.Fat;
+        if(typeof form !== "undefined")
+        {
+            this.Protein += form.Protein;
+            this.Carbohydrate += form.Carbohydrate;
+            this.Fat += form.Fat;
+        }
     }
 }

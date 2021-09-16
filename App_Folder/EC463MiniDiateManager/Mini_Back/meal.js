@@ -36,12 +36,15 @@ export default class Meal{
 
     copy(meal)
     {
-        this.name = meal.name;
+        this.name = (' ' + meal.name).slice(1);
         this.entries = new Array();
-        for(let i = 0; i < meal.entries.length; i++)
+        if(typeof meal.entries !== 'undefined')
         {
-            this.entries[i] = new FoodEntry();
-            this.entries[i].copy(meal.entries[i]);
+            for(let i = 0; i < meal.entries.length; i++)
+            {
+                this.entries[i] = new FoodEntry();
+                this.entries[i].copy(meal.entries[i]);
+            }
         }
     }
 }

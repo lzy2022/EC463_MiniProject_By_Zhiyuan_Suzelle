@@ -26,7 +26,7 @@ export default class Food{
 
     copy(food)
     {
-        this.name = food.name;
+        this.name = (' ' + food.name).slice(1);
         this.food_nutri = new NutritionForm();
         this.food_nutri.add(food.food_nutri);
     }
