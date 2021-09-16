@@ -8,6 +8,7 @@ import Meal from './Mini_Back/meal.js';
 import NutritionForm from "./Mini_Back/nutrition_form.js";
 import DayTakeIn from './Mini_Back/day_takein.js';
 import TestingSC from './Mini_Back/test.js';
+import { BottomNavigation} from 'react-native-paper';
 
 
 import {
@@ -97,6 +98,33 @@ const App = () => {
     setBackEnd(null);
     setBackEndLoaded(false);
   };
+  //Elements////////////////////////
+  //Bottom navigation/////
+  const EditRoute = () => {return(<Text>Edit</Text>);};
+
+  const CameraRoute = () => {return(<Text>Camera</Text>);};
+
+  const SavedFileRoute = () => {return(<><Text>Saveeeeed</Text></>);};
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'edit', title: 'Edit', icon: 'pencil' },
+    { key: 'camera', title: 'Camera', icon: 'camera' },
+    { key: 'savedfile', title: 'Saved Files', icon: 'camera' },
+  ]);
+
+  renderScene = ({route}) => {
+    switch (route.key) {
+      case 'edit':
+        return <Test_Page/>;
+      case 'camera':
+        return <CameraRoute/>;
+      case 'savedfile':
+        return <SavedFileRoute/>;
+    }
+  }
+  ////////////////
+
 
   /////////////////////////////
   //Screens
@@ -136,14 +164,10 @@ const App = () => {
       </>
     );
   }
-  
-  const Main_Page = () =>{
-    return (
-      <>
-        <Appbar style = {styles.appBarStyle}>
-        <Appbar.Content title={'Hellow! ' + userInfo.user.name} subtitle = {'EC463 Mini Project'}/>
-        </Appbar>
-        <SafeAreaView style={{flex: 1}}>
+
+  const Test_Page = () =>{
+    return (<>
+          <SafeAreaView style={{flex: 4}}>
           <View style={styles.container}>
             <View style={styles.container}>
                   <Image
@@ -174,6 +198,24 @@ const App = () => {
             </Text>
           </View>
         </SafeAreaView>
+      </>);
+  };
+
+  
+  const Main_Page = () =>{
+    return (
+      <>
+        <Appbar style = {styles.appBarStyle}>
+        <Appbar.BackAction onPress = {_signOut} icon = "exit"/>
+        <Appbar.Content title={'Hellow! ' + userInfo.user.name} subtitle = {'EC463 Mini Project'}/>
+        <Appbar.Action icon = {{uri: userInfo.user.photo}}/>
+        </Appbar>
+        
+        <BottomNavigation
+          navigationState={{ index, routes }}
+          onIndexChange={setIndex}
+          renderScene={renderScene}
+        />
       </>
     );
   }
@@ -201,7 +243,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 10,
   },
-  appBarStyle:{
+  ToolBarStyle: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  appBarStyle: {
     fontSize: 25,
     alignItems: 'center',
   },
