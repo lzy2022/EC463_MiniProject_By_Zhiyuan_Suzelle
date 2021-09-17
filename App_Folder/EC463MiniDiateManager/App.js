@@ -42,6 +42,10 @@ const App = () => {
   const [nowEditing, setNowEditing] = useState(null);
   const [editName, setEditName] = useState(null);
   const [editServingSize, SetEditServingSize] = useState(null);
+  const [editCalorie, SetEditCalorie] = useState(null);
+  const [editCarbo, SetEditCarbo] = useState(null);
+  const [editProtein, SetEditProtein] = useState(null);
+  const [editFat, SetEditFat] = useState(null);
   const [edit_M, setEdit_M] = useState(0);
   const [edit_F, setEdit_F] = useState(0);
   const [editType, setEditType] = useState(0); //1 for day 2 for meal 3 for food
@@ -181,6 +185,17 @@ const App = () => {
     console.log(temp.saved_food);
   }
 
+  function add_item_saved_fromEditor(m_index, f_index){
+    let temp = new BackEnd();
+    temp.copy(backEnd);
+    var i = temp.saved_food.length;
+    temp.saved_food[i] = new Food();
+    temp.saved_food[i].copy(backEnd.current_day.meals[m_index].entries[f_index].entry);
+    _save_BackEnd(temp);
+    setBackEnd(temp);
+    console.log(temp.saved_food);
+  }
+
   function add_day_saved(){
     let temp = new BackEnd();
     temp.copy(backEnd);
@@ -233,6 +248,16 @@ const App = () => {
     setBackEnd(temp);
   }
 
+  function change_nurtiForm(m_index, f_index){
+    let temp = new BackEnd();
+    let temp_nutri = new NutritionForm();
+    temp_nutri.load_data(editProtein, editCarbo, editFat, editCalorie);
+    temp.copy(backEnd); 
+    temp.current_day.meals[m_index].entries[f_index].entry.food_nutri = temp_nutri;
+    _save_BackEnd(temp);
+    setBackEnd(temp);
+  }
+
   function add_meal(){
     let temp = new BackEnd();
     let meal1 = new Meal();
@@ -267,6 +292,7 @@ const App = () => {
     return(<>
       <List.Accordion
         title = {item.name}
+        style={{backgroundColor: "#C3BEC7",}}
         left ={(m_index) => <List.Icon icon="plus"/>}
         onPress={() => show_msg(item)}
         onLongPress = {() => {setEditType(2);setEditingItem(true);setEdit_M(m_index)}}>
@@ -294,13 +320,31 @@ const App = () => {
   }
 
   const renderSearch = ({item}) => {
-    return(
-      <List.Item
-      title = {item.name}
-      left ={(m_index) => <List.Icon icon="minus"/>}
-      onPress={() => show_msg(item)}>
-      </List.Item>
-    )
+    if(onSearch == 1){
+      return(
+        <List.Item
+        title = {item.name}
+        left ={(m_index) => <List.Icon icon="minus"/>}
+        onPress={() => show_msg(item)}
+        onLongPress={() => {
+              let temp = new BackEnd();
+              temp.copy(backEnd);
+              temp.current_day.copy(item);
+              _save_BackEnd(temp);
+              setBackEnd(temp);
+              setOnSearch(false);
+        }}>
+        </List.Item>
+      )
+    }else{
+      return(
+        <List.Item
+        title = {item.name}
+        left ={(m_index) => <List.Icon icon="minus"/>}
+        onPress={() => show_msg(item)}>
+        </List.Item>
+      )
+    }
   }
 
   const renderSearch_load = ({item}) => {
@@ -427,7 +471,8 @@ const App = () => {
         <Appbar.BackAction onPress = {()=>{setEditingItem(false)}}/>
         <Appbar.Content title={"Edit Item..."}/>
         </Appbar.Header>
-
+        
+      <ScrollView>
         <Text style = {styles.EditText}>Edit Name:</Text>
           <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
@@ -456,12 +501,53 @@ const App = () => {
               onPress={() => {change_servingSize(edit_M, edit_F)}}
               style = {{justifyContent: 'space-between',}}
           />
+
+          <Text style = {styles.EditText}>Set Total Calorie:</Text>
+          <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Serving Size"
+               placeholderTextColor = "#9a73ef"
+               autoCapitalize = "none"
+               onChangeText = {(text) => SetEditCalorie(parseInt(text, 10))}/>
+          <Text style = {styles.EditText}>Set Protein(g):</Text>
+          <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Serving Size"
+               placeholderTextColor = "#9a73ef"
+               autoCapitalize = "none"
+               onChangeText = {(text) => SetEditProtein(parseInt(text, 10))}/>
+          <Text style = {styles.EditText}>Set Carbohydrate(g):</Text>
+          <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Serving Size"
+               placeholderTextColor = "#9a73ef"
+               autoCapitalize = "none"
+               onChangeText = {(text) => SetEditCarbo(parseInt(text, 10))}/>
+          <Text style = {styles.EditText}>Set Fat(g):</Text>
+          <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Serving Size"
+               placeholderTextColor = "#9a73ef"
+               autoCapitalize = "none"
+               onChangeText = {(text) => SetEditFat(parseInt(text, 10))}/>
+          <Button
+              title="Save per serving size Nutrition information"
+              onPress={() => {change_nurtiForm(edit_M, edit_F)}}
+              style = {{justifyContent: 'space-between',}}
+          />
+          <Text style = {styles.EditText}>Save the Item into Personal Data Base:</Text>
+          <Button
+              title="Save the Item"
+              onPress={() => {add_item_saved_fromEditor(edit_M, edit_F)}}
+              style = {{justifyContent: 'space-between',}}
+          />
         </>):(<></>)
       }
 
       {
         editType !== 1 ? 
         (<>
+        <Text style = {styles.EditText}>Delete Item from Editor:</Text>
           <Button
               title="Delete Item"
               onPress={() => {delet_Pressed()}}
@@ -469,6 +555,7 @@ const App = () => {
           />
         </>):(<></>)
       }
+      </ScrollView>
       </>
     );
   }

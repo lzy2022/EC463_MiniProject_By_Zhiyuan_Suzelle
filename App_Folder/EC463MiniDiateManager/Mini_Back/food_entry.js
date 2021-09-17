@@ -6,6 +6,7 @@ export default class FoodEntry{
     constructor(){
         this.entry = new Food();
         this.serving_size = 0;
+        this.name = "default_food"
     }
 
     set_food(food_form)
@@ -55,6 +56,7 @@ export default class FoodEntry{
     {
         this.entry.copy(entry.entry);
         this.serving_size = entry.serving_size;
+        this.name = entry.entry.name;
     }
 
 }

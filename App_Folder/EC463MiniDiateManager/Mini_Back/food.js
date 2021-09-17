@@ -31,4 +31,10 @@ export default class Food{
         this.food_nutri.add(food.food_nutri);
     }
 
+    copy_nutri(nutriForm)
+    {
+        this.food_nutri = new NutritionForm();
+        this.food_nutri.add(nutriForm);
+    }
+
 }
