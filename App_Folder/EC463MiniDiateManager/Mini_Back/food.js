@@ -9,7 +9,7 @@ export default class Food{
     set_food(food_form)
     {
         this.name = food_form.Name;
-        this.food_nutri.load_data(food_form.Protein, food_form.Carbohydrate, food_form.Fat);
+        this.food_nutri.load_data(food_form.Protein, food_form.Carbohydrate, food_form.Fat, food_form.Calorie);
     }
 
     return_nutri(){

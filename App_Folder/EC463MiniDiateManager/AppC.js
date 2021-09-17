@@ -9,7 +9,7 @@ import NutritionForm from "./Mini_Back/nutrition_form.js";
 import DayTakeIn from './Mini_Back/day_takein.js';
 import TestingSC from './Mini_Back/test.js';
 import BackEnd from './Mini_Back/back_end.js';
-import { BottomNavigation, List, Searchbar} from 'react-native-paper';
+import { BottomNavigation, List} from 'react-native-paper';
 import { FlatList, ScrollView, TextInput, Button} from 'react-native';
 
 
@@ -45,12 +45,6 @@ const App = () => {
   const [edit_M, setEdit_M] = useState(0);
   const [edit_F, setEdit_F] = useState(0);
   const [editType, setEditType] = useState(0); //1 for day 2 for meal 3 for food
-  const [onSearch, setOnSearch] = useState(0); //0 not searching, 1 for day, 2 for food
-  const [searchListItem, setSearchLishItem] = useState(null);
-  const [showingMsg, setShowingMsg] = useState(false);
-  const [itemShown, setItemShown] = useState(null);
-  const [add_M, setAdd_M] = useState(0);
-  const [add_F, setAdd_F] = useState(0);
 
   useEffect(() => {
     // Initial configuration
@@ -74,13 +68,11 @@ const App = () => {
 
   const _load_BackEnd = (Info) => {
     console.log("KKKKK"+Info);
-    var temp = new BackEnd();
-    var inited = false;
+    const temp = new BackEnd();
     if (typeof Info !== "undefined"){
       firestore().collection(Info.user.id).get().then(snapshot => {
       snapshot.forEach(doc => {
           if(doc.id == "DiateLog"){
-              inited = true;
               console.log(doc.data().temp);
               temp.copy(doc.data().temp);
               setBackEnd(temp);
@@ -88,14 +80,6 @@ const App = () => {
               setBackEndLoaded(true);
           }
         });
-        console.log("xxxxxxxxx");
-        console.log(inited);
-        if(inited == false)
-        {
-          firestore().collection(Info.user.id).add({new: 0});
-          setBackEnd(temp)
-          _save_BackEnd(temp);
-        }
     });}
   };
   
@@ -125,7 +109,6 @@ const App = () => {
     await GoogleSignin.revokeAccess();
     await GoogleSignin.signOut();
       // Removing user Info
-    _save_BackEnd(backEnd);
     setUserInfo(null); 
     setUserStorage(null);
     setGettingLoginStatus(false);
@@ -228,7 +211,7 @@ const App = () => {
   function change_servingSize(m_index, f_index){
     let temp = new BackEnd();
     temp.copy(backEnd); 
-    temp.current_day.meals[m_index].entries[f_index].serving_size = editServingSize;
+    temp.current_day.meals[m_index].entries[f_index].serving_size = 100;
     _save_BackEnd(temp);
     setBackEnd(temp);
   }
@@ -256,8 +239,6 @@ const App = () => {
   function show_msg(item){
     console.log(item.name);
     console.log(item.return_nutri());
-    setItemShown(item);
-    setShowingMsg(true);
   }
 
   const renderMeals = ({item}) =>{
@@ -273,7 +254,7 @@ const App = () => {
       </List.Accordion>
       <List.Item style = {styles.mealText}
             title = " + Add Food"
-            onPress={() => {setAdd_M(m_index);setOnSearch(4);}}/>
+            onPress={() => add_item_index(m_index, test_food)}/>
       <FlatList
             data={item.entries}
             renderItem={(item) => renderFoods(item, m_index)}
@@ -293,26 +274,8 @@ const App = () => {
     </>);
   }
 
-  const renderSearch = ({item}) => {
-    return(
-      <List.Item
-      title = {item.name}
-      left ={(m_index) => <List.Icon icon="minus"/>}
-      onPress={() => show_msg(item)}>
-      </List.Item>
-    )
-  }
+  ////////////////
 
-  const renderSearch_load = ({item}) => {
-    return(
-      <List.Item
-      title = {item.name}
-      left ={(m_index) => <List.Icon icon="minus"/>}
-      onPress={() => show_msg(item)}
-      onLongPress={()=> {add_item_index(add_M, item); setOnSearch(0);}}>
-      </List.Item>
-    )
-  }
   /////////////////////////////
   //Screens
   ///////////////////////////
@@ -327,11 +290,11 @@ const App = () => {
   const Login_Page = () =>{
     return (
       <>
-        <Appbar style = {styles.appBarStyle}>
-        <Appbar.Content title={'Personal Diate Manager'} subtitle = {'EC463 Mini Project'}/>
-        <Appbar.Action icon = 'book'/>
-        </Appbar>
         <SafeAreaView style={{flex: 1}}>
+          <View style={styles.container}>
+            <Text style={styles.titleText}>
+              Example of Google Sign In in React Native
+            </Text>
             <View style={styles.container}>
                 <GoogleSigninButton
                   style={{width: 312, height: 48}}
@@ -341,11 +304,12 @@ const App = () => {
                 />
             </View>
             <Text style={styles.footerHeading}>
-              by Zhiyuan and Suzelle
+              Google SignIn in React Native
             </Text>
             <Text style={styles.footerText}>
-              2021 September at Boston University
+              www.aboutreact.com
             </Text>
+          </View>
         </SafeAreaView>
       </>
     );
@@ -389,7 +353,6 @@ const App = () => {
 
   
   const Main_Page = () =>{
-    //if(typeof backEnd !)
     return (
       <>
         <Appbar style = {styles.appBarStyle}>
@@ -438,7 +401,6 @@ const App = () => {
           <Button
               title="Save Name"
               onPress={() => {name_Pressed()}}
-              style = {{justifyContent: 'space-between',}}
           />
       
       {
@@ -454,7 +416,6 @@ const App = () => {
           <Button
               title="Set Serving Size"
               onPress={() => {change_servingSize(edit_M, edit_F)}}
-              style = {{justifyContent: 'space-between',}}
           />
         </>):(<></>)
       }
@@ -465,7 +426,6 @@ const App = () => {
           <Button
               title="Delete Item"
               onPress={() => {delet_Pressed()}}
-              style = {{justifyContent: 'space-between',}}
           />
         </>):(<></>)
       }
@@ -473,112 +433,12 @@ const App = () => {
     );
   }
 
-  const Search_Page = () => {
-    var searchingList = new Array();
-    const onChangeSearch = (query) => {
-      //day
-      if(onSearch == 1){
-        searchingList = new Array();
-        if(backEnd.saved_day !== null)
-        {
-          for(let i = 1; i < backEnd.saved_day.length; i++)
-          {
-            if (backEnd.saved_day[i].name.startsWith(query))
-            {
-              searchingList[searchingList.length] = new DayTakeIn();
-              searchingList[searchingList.length - 1].copy(backEnd.saved_day[i]);
-            }
-          }
-          setSearchLishItem(searchingList);
-        }
-      }
-      //food
-      if(onSearch == 2 || onSearch == 4){
-        searchingList = new Array();
-        if(backEnd.saved_food !== null)
-        {
-          for(let i = 1; i < backEnd.saved_food.length; i++)
-          {
-            if (backEnd.saved_food[i].name.startsWith(query))
-            {
-              searchingList[searchingList.length] = new Food();
-              searchingList[searchingList.length - 1].copy(backEnd.saved_food[i]);
-            }
-          }
-          setSearchLishItem(searchingList);
-        }
-      }
-    }
-
-    if(onSearch == 4)
-    {
-      return (<>
-        <Appbar>
-          <Appbar.BackAction onPress = {()=>{setOnSearch(0)}}/>
-          <Appbar.Content title={"Search"}/>
-        </Appbar>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={(query) => onChangeSearch(query)}
-      />
-      <FlatList
-              data={searchListItem}
-              renderItem={(item) => renderSearch_load(item)}
-            />
-            </>);
-    }else{
-      return (<>
-        <Appbar>
-          <Appbar.BackAction onPress = {()=>{setOnSearch(0)}}/>
-          <Appbar.Content title={"Search"}/>
-        </Appbar>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={(query) => onChangeSearch(query)}
-      />
-      <FlatList
-              data={searchListItem}
-              renderItem={(item) => renderSearch(item)}
-            />
-    </>);}
-  }
-
-  const Summary_Page = () => {
-    var sum = new NutritionForm();
-    if(itemShown != null)
-    {
-      sum.add(itemShown.return_nutri());
-    }
-
-    return (<>
-     <Appbar.Header style={{backgroundColor: "#CBCBFA"}}>
-        <Appbar.BackAction onPress = {()=>{setShowingMsg(false)}}/>
-        <Appbar.Content title={"Summary of Item..."}/>
-     </Appbar.Header>
-     <SafeAreaView style={styles.container}>
-      <ScrollView style={{marginHorizontal: 15}}>
-        <Text style={{fontSize: 20}}>
-          Now showing: {itemShown.name} {"\n"}
-        </Text>
-        <Text style={{fontSize: 17}}>
-          ============================= {"\n"}
-          Total Calories: {sum.Calorie} {"\n"}
-          ============================= {"\n"}
-          Total Protein: {sum.Protein} {sum.Protein_unit} {"\n"}
-          Total Carbohydrate: {sum.Carbohydrate} {sum.Carbohydrate_unit} {"\n"}
-          Total Fat: {sum.Fat} {sum.Fat_unit} {"\n"}
-        </Text>
-      </ScrollView>
-    </SafeAreaView>
-    </>);
-  }
-
   const EditRoute = () => {
     const day_edit_pressed = () => {
       setEditType(1);
       setEditingItem(true);
     };
-    if(backEnd == null){return(<></>);}
+    if(typeof backEnd !== "object"){return(<></>);}
     return(
   <>
         <Appbar.Header style={{backgroundColor: "#CBCBFA"}}>
@@ -601,19 +461,7 @@ const App = () => {
 
   const CameraRoute = () => {return(<Text>Camera</Text>);};
   
-  const SavedFileRoute = () => {return(<>
-        <Appbar.Header style={{backgroundColor: "#CBCBFA"}}>
-        <Appbar.Content title="View the Saved Files"/>
-        </Appbar.Header>
-        <List.Item
-          left ={() => <List.Icon icon="eye"/>}
-          title = "Search Saved Day-receipt"
-          onPress = {() => {setOnSearch(1);}}/>
-        <List.Item
-          left ={() => <List.Icon icon="eye"/>}
-          title = "Search Saved Food-receipt"
-          onPress = {() => {setOnSearch(2);}}/>           
-  </>);};
+  const SavedFileRoute = () => {return(<><Text>Saveeeeed</Text></>);};
 
 
 ////////////////////////////////
@@ -626,13 +474,7 @@ const App = () => {
   } else if (editingItem == true)
   {
     return (ItemEdit_Page());
-  } else if (showingMsg == true)
-  {
-    return (Summary_Page());
-  } else if (onSearch != 0)
-  {
-    return (Search_Page());
-  } else {
+  }else{
     return (Main_Page());
   }
 
@@ -642,13 +484,6 @@ export default App;
 
 
 const styles = StyleSheet.create({
-  editButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'skyblue',
-  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
