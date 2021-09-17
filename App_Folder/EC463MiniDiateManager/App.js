@@ -11,6 +11,7 @@ import TestingSC from './Mini_Back/test.js';
 import BackEnd from './Mini_Back/back_end.js';
 import { BottomNavigation, List, Searchbar} from 'react-native-paper';
 import { FlatList, ScrollView, TextInput, Button} from 'react-native';
+import { RNCamera } from 'react-native-camera';
 
 
 import {
@@ -55,6 +56,8 @@ const App = () => {
   const [itemShown, setItemShown] = useState(null);
   const [add_M, setAdd_M] = useState(0);
   const [add_F, setAdd_F] = useState(0);
+  const [barcode, setBarcode] = useState(null);
+  const [barcode_cache, setBarcode_cache] = useState(null);
 
   useEffect(() => {
     // Initial configuration
@@ -66,6 +69,30 @@ const App = () => {
     setBackEnd(temp);
     _isSignedIn();
   }, []);
+
+  // Camera==============================
+  var camera = {
+    type: RNCamera.Constants.Type.back,
+    flashMode: RNCamera.Constants.FlashMode.auto,
+  }
+
+  const onBarCodeRead = (scanResult) => {
+    console.warn(scanResult.type);
+    console.log(scanResult.data);
+    if (scanResult.data != null) {
+      setBarcode(scanResult.data);
+    }
+  }
+
+  const takePicture = async () => {
+    if (camera !== null) {
+      const options = { quality: 0.5, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      console.log(data.uri);
+    }
+  }
+  //===================================
+
 
   const _isSignedIn = async () => {
     const isSignedIn = await GoogleSignin.isSignedIn();
@@ -686,7 +713,42 @@ const App = () => {
         </SafeAreaView>
   </>);};
 
-  const CameraRoute = () => {return(<Text>Camera</Text>);};
+  const CameraRoute = () => {return (<>
+    <TextInput style = {styles.input}
+                underlineColorAndroid = "transparent"
+                placeholder = "Enter Barcode"
+                placeholderTextColor = "#9a73ef"
+                autoCapitalize = "none"
+                mirrorImage={false}
+                onChangeText = {(text)=>{setBarcode_cache(text)}}/>
+    <RNCamera 
+      ref={ref => {
+        this.camera = ref;
+      }}
+      captureAudio={false}
+      style={{flex: 1}}
+      type={RNCamera.Constants.Type.back}
+      onBarCodeRead={onBarCodeRead}
+      androidCameraPermissionOptions={{
+        title: 'Permission to use camera',
+        message: 'We need your permission to use your camera',
+        buttonPositive: 'Ok',
+        buttonNegative: 'Cancel',
+      }} />
+    <View style={[styles.overlay, styles.topOverlay]}>
+    <Text style={styles.scanScreenMessage}></Text>
+    </View>
+    <View style={[styles.overlay, styles.bottomOverlay]}>
+            <Button
+              onPress={
+                () => { 
+                      console.log('scan clicked'); 
+                }}
+                style={styles.enterBarcodeManualButton}
+                title="Scan Barcode"
+            />
+        </View>
+    </>);};
   
   const SavedFileRoute = () => {return(<>
         <Appbar.Header style={{backgroundColor: "#CBCBFA"}}>
@@ -729,6 +791,44 @@ export default App;
 
 
 const styles = StyleSheet.create({
+  enterBarcodeManualButton: {
+    padding: 15,
+    backgroundColor: 'white',
+    borderRadius: 40
+  },
+  scanScreenMessage: {
+    fontSize: 25,
+    color: 'white',
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  overlay: {
+    position: 'absolute',
+    padding: 16,
+    right: 0,
+    left: 0,
+    alignItems: 'center'
+  },
+  topOverlay: {
+    top: 0,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  bottomOverlay: {
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  preview: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
   editButton: {
     paddingVertical: 12,
     paddingHorizontal: 32,
