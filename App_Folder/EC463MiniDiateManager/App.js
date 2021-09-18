@@ -532,28 +532,28 @@ const App = () => {
           <Text style = {styles.EditText}>Set Total Calorie:</Text>
           <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Serving Size"
+               placeholder = "Calories"
                placeholderTextColor = "#9a73ef"
                autoCapitalize = "none"
                onChangeText = {(text) => SetEditCalorie(parseInt(text, 10))}/>
           <Text style = {styles.EditText}>Set Protein(g):</Text>
           <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Serving Size"
+               placeholder = "Protein"
                placeholderTextColor = "#9a73ef"
                autoCapitalize = "none"
                onChangeText = {(text) => SetEditProtein(parseInt(text, 10))}/>
           <Text style = {styles.EditText}>Set Carbohydrate(g):</Text>
           <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Serving Size"
+               placeholder = "Carbohydrate"
                placeholderTextColor = "#9a73ef"
                autoCapitalize = "none"
                onChangeText = {(text) => SetEditCarbo(parseInt(text, 10))}/>
           <Text style = {styles.EditText}>Set Fat(g):</Text>
           <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Serving Size"
+               placeholder = "Fat"
                placeholderTextColor = "#9a73ef"
                autoCapitalize = "none"
                onChangeText = {(text) => SetEditFat(parseInt(text, 10))}/>
@@ -576,6 +576,7 @@ const App = () => {
         (<>
         <Text style = {styles.EditText}>Delete Item from Editor:</Text>
           <Button
+              color = "#EF2303"
               title="Delete Item"
               onPress={() => {delet_Pressed()}}
               style = {{justifyContent: 'space-between',}}
