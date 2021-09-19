@@ -20,3 +20,8 @@ This repository contains a Mini Project for Boston University EC463 Fall 2021 by
 1. Camera scanner
 2. FDA API integration
 3. Scanning page design
+
+## Navigation
+1. App folder contains the poject folder and a release version App package (aab package)
+2. Meeting log folder contains picture and doc files from meetings
+3. Doc folder contains App description and videos
