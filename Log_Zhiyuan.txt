@@ -23,3 +23,25 @@ Sep 13:
 		4. react-native-vector-icons (for UI, need to register)
 			https://callstack.github.io/react-native-paper/getting-started.html
 		5. react-native-firebase/auth (for Google autho)
+Sep 14:
+	1. Set up FireStore
+		1. Change safty rules for the database
+		2. Test user storage
+		3. Test user storage with Google UID
+Sep 15:
+	1. UI design using React-Native
+		1. Create pages for login and Main navigation
+		2. Create Editing Page for personal recipe
+		3. Create Page to view saved files
+
+Sep 16:
+	1. Test local backend communication with firestore database
+	2. Update UI
+		1. Create Item Editing page
+		2. Create Item Summary page
+
+Sep 17:
+	1. Integrate Scanner Page done by Suzelle
+	2. Create a signed releaseable AAB package
+	
+
